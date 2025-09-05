@@ -1,0 +1,6 @@
+gmail_incremental_sync:
+  cron: "*/10 * * * *"
+  class: "ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper"
+  queue: default
+  args:
+    job_class: "GmailIncrementalSyncJob"

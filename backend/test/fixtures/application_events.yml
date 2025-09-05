@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  application: one
+  event_type: MyString
+  payload: 
+  occurred_at: 2025-09-04 14:03:31
+
+two:
+  application: two
+  event_type: MyString
+  payload: 
+  occurred_at: 2025-09-04 14:03:31
