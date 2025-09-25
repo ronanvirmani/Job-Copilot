@@ -27,5 +27,8 @@ Rails.application.routes.draw do
 
     get "/insights/summary", to: "insights#summary"
     get "/insights/company_leaderboard", to: "insights#company_leaderboard"
+
+    post "/auth/google/exchange_code", to: "auth#exchange_google_code"
+
   end
 end

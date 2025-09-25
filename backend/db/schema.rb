@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_04_180333) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_18_000000) do
   create_schema "auth"
   create_schema "cron"
   create_schema "extensions"
@@ -108,6 +108,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_180333) do
     t.string "gmail_history_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "last_gmail_synced_at"
+    t.index ["last_gmail_synced_at"], name: "index_users_on_last_gmail_synced_at"
     t.index ["supabase_user_id"], name: "index_users_on_supabase_user_id"
   end
 

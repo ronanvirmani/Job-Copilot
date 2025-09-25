@@ -32,12 +32,30 @@ module SupabaseAuth
         return render json: { error: "Invalid token: missing sub" }, status: :unauthorized
       end
 
-      # 3) Find the user by supabase_user_id
+      # 3) Find or (in dev) auto-provision the user by supabase_user_id
       @current_user = User.find_by(supabase_user_id: sub)
-      unless @current_user
-        Rails.logger.warn("[AUTH] No user for sub=#{sub.inspect}")
-        # In dev, you may choose to auto-provision. For now, fail clearly:
-        return render json: { error: "User not found for token sub" }, status: :unauthorized
+
+      if @current_user.nil?
+        if Rails.env.production?
+          Rails.logger.warn("[AUTH] No user for sub=#{sub.inspect}")
+          return render json: { error: "User not found for token sub" }, status: :unauthorized
+        end
+
+        provisioned_email = email.presence
+        if provisioned_email.blank? && decoded["user_metadata"].is_a?(Hash)
+          provisioned_email = decoded["user_metadata"]["email"].presence
+        end
+
+        begin
+          @current_user = User.create!(
+            supabase_user_id: sub,
+            email: provisioned_email
+          )
+          Rails.logger.info("[AUTH] Auto-provisioned user for sub=#{sub.inspect}")
+        rescue ActiveRecord::RecordInvalid => e
+          Rails.logger.error("[AUTH] Failed to auto-provision user: #{e.message}")
+          return render json: { error: "Unable to provision user" }, status: :unauthorized
+        end
       end
 
     rescue JWT::ExpiredSignature
