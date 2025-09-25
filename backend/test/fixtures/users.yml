@@ -1,16 +1,16 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  supabase_user_id: MyString
-  email: MyString
+  supabase_user_id: user-one
+  email: one@example.com
   google_access_token: MyText
   google_refresh_token: MyText
   token_expires_at: 2025-09-03 22:28:53
   gmail_history_id: MyString
 
 two:
-  supabase_user_id: MyString
-  email: MyString
+  supabase_user_id: user-two
+  email: two@example.com
   google_access_token: MyText
   google_refresh_token: MyText
   token_expires_at: 2025-09-03 22:28:53

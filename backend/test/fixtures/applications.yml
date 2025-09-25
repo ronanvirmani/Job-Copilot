@@ -7,7 +7,7 @@ one:
   location: MyString
   source: MyString
   job_url: MyString
-  status: MyString
+  status: applied
   applied_at: 2025-09-04 14:03:29
   last_email_at: 2025-09-04 14:03:29
   last_status_change_at: 2025-09-04 14:03:29
@@ -20,7 +20,7 @@ two:
   location: MyString
   source: MyString
   job_url: MyString
-  status: MyString
+  status: applied
   applied_at: 2025-09-04 14:03:29
   last_email_at: 2025-09-04 14:03:29
   last_status_change_at: 2025-09-04 14:03:29

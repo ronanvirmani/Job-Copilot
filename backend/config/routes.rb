@@ -22,7 +22,9 @@ Rails.application.routes.draw do
 
     # existing endpoints
     post "/sync/gmail", to: "syncs#gmail"
-    resources :messages, only: [:index]
+    resources :messages, only: [:index, :update] do
+      patch :claim, on: :member
+    end
     resources :applications, only: [:index, :show]
 
     post "/classifications/preview", to: "classifications#create"

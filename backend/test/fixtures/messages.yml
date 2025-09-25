@@ -9,10 +9,10 @@ one:
   to_addr: MyString
   subject: MyString
   snippet: MyText
-  classification: MyString
+  classification: other
   internal_ts: 2025-09-04 14:03:30
   raw_headers: 
-  parts_metadata: 
+  parts_metadata: {}
 
 two:
   application: two
@@ -23,7 +23,7 @@ two:
   to_addr: MyString
   subject: MyString
   snippet: MyText
-  classification: MyString
+  classification: other
   internal_ts: 2025-09-04 14:03:30
   raw_headers: 
-  parts_metadata: 
+  parts_metadata: {}

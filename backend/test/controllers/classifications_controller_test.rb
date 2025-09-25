@@ -1,9 +1,16 @@
 require "test_helper"
 require "jwt"
+require "securerandom"
+require "minitest/mock"
 
 class ClassificationsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @user = users(:one)
+    @user = User.create!(
+      supabase_user_id: SecureRandom.uuid,
+      email: "tester@example.com",
+      google_access_token: "token",
+      google_refresh_token: "refresh"
+    )
     @secret = "test-secret"
     ENV["SUPABASE_JWT_SECRET"] = @secret
   end
