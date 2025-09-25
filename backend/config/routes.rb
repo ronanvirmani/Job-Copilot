@@ -25,6 +25,8 @@ Rails.application.routes.draw do
     resources :messages, only: [:index]
     resources :applications, only: [:index, :show]
 
+    post "/classifications/preview", to: "classifications#create"
+
     get "/insights/summary", to: "insights#summary"
     get "/insights/company_leaderboard", to: "insights#company_leaderboard"
 

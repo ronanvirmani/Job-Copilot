@@ -16,7 +16,13 @@ class ParsedMessageIngester
     from    = headers["From"].to_s
     body    = extract_text(@gm)
 
-    label   = EmailClassifier.new("#{subject}\n#{body}").classify
+    classifier_result = EmailClassifier.new("#{subject}\n#{body}").classify_with_confidence
+    label             = classifier_result[:label]
+
+    company = upsert_company(from)
+    contact = upsert_contact(company, from)
+    app     = upsert_application(company, subject, body)
+
     if %w[interview_invite oa].include?(label)
       starts_at, ends_at = EmailTimeParser.extract("#{subject}\n#{body}")
       if starts_at && ends_at
@@ -24,25 +30,32 @@ class ParsedMessageIngester
         CalendarWriter.ensure_event_for!(@user, application: app, starts_at:, ends_at:, summary:, location: nil, description: "Auto-created from email")
       end
     end
-    company = upsert_company(from)
-    contact = upsert_contact(company, from)
-    app     = upsert_application(company, subject, body)
 
-    Message.find_or_initialize_by(gmail_message_id: @gm.id).update!(
+    message = Message.find_or_initialize_by(gmail_message_id: @gm.id)
+    existing_metadata = message.parts_metadata.presence || {}
+    classification_metadata = {
+      "source" => classifier_result[:source],
+      "confidence" => classifier_result[:confidence],
+      "raw" => classifier_result[:raw]
+    }.compact
+    existing_metadata["classification"] = classification_metadata if classification_metadata.present?
+
+    message.update!(
       application: app, contact: contact,
       gmail_thread_id: @gm.thread_id,
       from_addr: from, to_addr: headers["To"],
       subject: subject, snippet: @gm.snippet.to_s,
       classification: label,
       internal_ts: Time.at(@gm.internal_date.to_i / 1000.0),
-      raw_headers: headers, parts_metadata: {}
+      raw_headers: headers,
+      parts_metadata: existing_metadata
     )
 
     app.update!(last_email_at: Time.current)
 
     ApplicationEvent.create!(
       application: app, event_type: "email_ingested",
-      payload: { classification: label, subject: subject },
+      payload: { classification: label, confidence: classifier_result[:confidence], source: classifier_result[:source], subject: subject }.compact,
       occurred_at: Time.current
     )
 

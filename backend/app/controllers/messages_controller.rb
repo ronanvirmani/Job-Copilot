@@ -11,6 +11,7 @@ class MessagesController < ApplicationController
 
     render json: scope.as_json(
       only: %i[id subject snippet classification internal_ts gmail_thread_id],
+      methods: %i[classification_confidence classification_source],
       include: {
         application: { only: %i[id role_title status] },
         contact: { only: %i[id name email] }
